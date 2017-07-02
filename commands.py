@@ -2,6 +2,7 @@ import string
 
 from add import *
 from connect import *
+from peruse import *
 
 
 def add(*args):
@@ -28,3 +29,11 @@ def connect(*args):
 
     else:
         band_to_band(args[0], args[2])
+
+
+def peruse(*args):
+    if len(args) == 0:
+        print 'Please specify entity to peruse.'
+
+    else:
+        events(args[0])
