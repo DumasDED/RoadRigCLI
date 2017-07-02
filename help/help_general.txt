@@ -1,0 +1,12 @@
+
+:: ROADRIG CLI ::
+
+Command line utility for loading the RoadRig database.
+
+rg add <type> <handle>
+	Adds a new entity to the database.
+	<type> 	 - the type of entity to add, i.e. 'band', 'venue'
+	<handle> - the Facebook handle for the target entity.
+
+rg config [<type>] [-options]
+	Modify configurations for the RoadRig utility.
