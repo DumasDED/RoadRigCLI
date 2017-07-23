@@ -5,15 +5,20 @@ from py2neo import Graph, Node, Relationship, GraphError
 db = Graph(password=config.db_password)
 
 
-def add_node(node_type, **properties):
-    node = Node(node_type, **properties)
+def check_node(label, key, value):
+    node = db.find_one(label, key, value)
+    return node is not None
+
+
+def add_node(label, **properties):
+    node = Node(label, **properties)
     db.create(node)
 
 
-def get_node(node_type, handle):
-    node = db.find_one(node_type, 'username', handle)
+def get_node(label, value, key='username'):
+    node = db.find_one(label, key, value)
     if node is None:
-        raise GraphError("No %s found with handle '%s'." % (node_type, handle))
+        raise GraphError("No %s found with %s '%s'." % (label, key, value))
     return node
 
 
