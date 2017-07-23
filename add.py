@@ -16,7 +16,7 @@ def band(*args):
             if not database.check_node('city', 'name', c):
                 city(c)
                 connect.city_to_state(c, s)
-            connect.venue_to_city(r['username'], c)
+            connect.band_to_city(r['username'], c)
     except error.types as e:
         error.handle(e, args[0])
     else:

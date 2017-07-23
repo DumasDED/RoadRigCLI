@@ -15,6 +15,19 @@ def band_to_band(band1, band2):
         print "Done."
 
 
+def band_to_city(band, city):
+    print "Connecting %s to %s..." % (band, city)
+    try:
+        band = database.get_node('band', band)
+        city = database.get_node('city', city, 'name')
+
+        database.add_relationship(band, 'is_from', city)
+    except error.types as e:
+        error.handle(e)
+    else:
+        print "Done."
+
+
 def venue_to_city(venue, city):
     print "Connecting %s to %s..." % (venue, city)
     try:

@@ -1,4 +1,5 @@
 import string
+import parse
 
 from add import *
 from connect import *
@@ -12,6 +13,18 @@ def add(*args):
 
     elif args[0] == 'band':
         band(*args[1:])
+
+    elif args[0] == 'bands':
+        if args[1] == 'from' and args[2] == 'file' and '.' in args[3]:
+            lst = parse.text_file(args[3])
+            for name in lst:
+                band(name)
+        elif args[1] == 'from' and '.' in args[2]:
+            lst = parse.text_file(args[2])
+            for name in lst:
+                band(name)
+        else:
+            print "'%s' is not a recognized command. Please specify a filename." % string.join(args[1:])
 
     elif args[0] == 'venue':
         venue(*args[1:])

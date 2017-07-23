@@ -8,3 +8,10 @@ def location(r):
         return r, c, s
     else:
         return r, None, None
+
+
+def text_file(name):
+    f = open(name, 'r')
+    l = f.read().split('\n')
+    f.close()
+    return l
