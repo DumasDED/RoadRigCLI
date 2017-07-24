@@ -1,16 +1,13 @@
 def location(r):
     r = r.copy()
-    try:
-        if 'location' in r:
-            l = r['location']
-            r.pop('location', None)
-            c = l['city']
-            s = l['state']
-            return r, c, s
-        else:
-            return r, None, None
-    except KeyError as e:
-        raise KeyError("Location could not be parsed. No value available for %s." % e)
+    if 'location' in r:
+        l = r['location']
+        r.pop('location', None)
+        c = l['city'] if 'city' in l else None
+        s = l['state'] if 'state' in l else None
+        return r, c, s
+    else:
+        return r, None, None
 
 
 def text_file(name):
