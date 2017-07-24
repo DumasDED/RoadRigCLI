@@ -11,6 +11,10 @@ def band(*args):
     try:
         r = facebook.get(args[0], **{'fields': config.app_fields_band})
         r, c, s = parse.location(r)
+        if c is None and len(args) >= 2:
+            c == args[1]
+        if s is None and len(args) >= 3:
+            s == args[2]
         database.add_node('band', **r)
         if c is not None and s is not None:
             if not database.check_node('city', 'name', c):

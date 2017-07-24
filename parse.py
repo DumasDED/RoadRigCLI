@@ -1,5 +1,3 @@
-import error
-
 def location(r):
     r = r.copy()
     try:
@@ -19,4 +17,4 @@ def text_file(name):
     f = open(name, 'r')
     l = f.read().split('\n')
     f.close()
-    return l
+    return [i.split(', ') for i in l]

@@ -24,12 +24,12 @@ elif 'add' == args[0].lower():
     elif args[1] == 'bands':
         if args[2] == 'from' and args[3] == 'file' and '.' in args[4]:
             lst = parse.text_file(args[4])
-            for name in lst:
-                cmds.add.band(name)
+            for row in lst:
+                cmds.add.band(*row)
         elif args[2] == 'from' and '.' in args[3]:
             lst = parse.text_file(args[3])
-            for name in lst:
-                cmds.add.band(name)
+            for row in lst:
+                cmds.add.band(*row)
         else:
             print "'%s' is not a recognized command. Please specify a filename." % string.join(args[2:])
 
