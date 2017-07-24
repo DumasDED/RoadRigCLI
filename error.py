@@ -1,7 +1,7 @@
 import requests
 import py2neo
 
-types = (requests.exceptions.HTTPError, py2neo.ConstraintError, py2neo.GraphError)
+types = (requests.exceptions.HTTPError, py2neo.ConstraintError, py2neo.GraphError, KeyError)
 
 
 def handle(exception, *args):
@@ -17,4 +17,7 @@ def handle(exception, *args):
         print "%s already exists in the database." % args[0]
     elif isinstance(exception, py2neo.GraphError):
         print "There was a problem accessing the database:"
+        print exception
+    elif isinstance(exception, KeyError):
+        print "There was a problem parsing a data object:"
         print exception
