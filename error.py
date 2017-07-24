@@ -1,7 +1,12 @@
 import requests
 import py2neo
+import sys
 
-types = (requests.exceptions.HTTPError, py2neo.ConstraintError, py2neo.GraphError, KeyError)
+types = (requests.exceptions.HTTPError,
+         py2neo.ConstraintError,
+         py2neo.GraphError,
+         KeyError,
+         py2neo.http.SocketError)
 
 
 def handle(exception, *args):
@@ -21,3 +26,9 @@ def handle(exception, *args):
     elif isinstance(exception, KeyError):
         print "There was a problem parsing a data object:"
         print exception
+    elif isinstance(exception, py2neo.http.SocketError):
+        print "There was an error connecting to the database:"
+        print exception.description
+        sys.exit(0)
+    else:
+        raise exception

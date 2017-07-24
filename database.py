@@ -1,8 +1,12 @@
 import config
+import error
 
 from py2neo import Graph, Node, Relationship, GraphError
 
-db = Graph(password=config.db_password)
+try:
+    db = Graph(password=config.db_password)
+except error.types as e:
+    error.handle(e)
 
 
 def check_node(label, key, value):
