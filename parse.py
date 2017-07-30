@@ -15,5 +15,5 @@ def location(r):
 def text_file(name):
     f = open(name, 'r')
     l = f.read().split('\n')
-    f.close()git stat
+    f.close()
     return [i.split(', ') for i in l]
