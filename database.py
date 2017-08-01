@@ -26,6 +26,11 @@ def get_node(label, value, key='username'):
     return node
 
 
+def check_relationship(node1, relationship_type, node2):
+    rel = db.match_one(node1, relationship_type, node2)
+    return rel is not None
+
+
 def add_relationship(node1, relationship_type, node2):
     rel = Relationship(node1, relationship_type, node2)
     db.create(rel)

@@ -2,7 +2,7 @@ import config
 import connect
 import parse
 import facebook
-import database
+import database as db
 import error
 
 
@@ -10,13 +10,17 @@ def band(*args):
     print "Adding band '%s'..." % args[0]
     try:
         r = facebook.get(args[0], **{'fields': config.app_fields_band})
-        # todo: figure out a better way to do this. Probably not using args.
-        r, c, s = parse.location(r)
+        if len(args) == 3:
+            r = parse.location(r)[0]
+            c, s = args[1:3]
+        else:
+            r, c, s = parse.location(r)
 
-        database.add_node('band', **r)
+        db.add_node('band', **r)
         if c is not None and s is not None:
-            if not database.check_node('city', 'name', c):
+            if not db.check_node('city', 'name', c):
                 city(c)
+            if not db.check_relationship(db.get_node('city', c, 'name'), 'is_in', db.get_node('state', s, 'abbr')):
                 connect.city_to_state(c, s)
             connect.band_to_city(r['username'], c)
     except error.types as e:
@@ -30,9 +34,9 @@ def venue(*args):
     try:
         r = facebook.get(args[0], **{'fields': config.app_fields_venue})
         r, c, s = parse.location(r)
-        database.add_node('venue', **r)
+        db.add_node('venue', **r)
         if c is not None and s is not None:
-            if not database.check_node('city', 'name', c):
+            if not db.check_node('city', 'name', c):
                 city(c)
                 connect.city_to_state(c, s)
             connect.venue_to_city(r['username'], c)
@@ -45,7 +49,7 @@ def venue(*args):
 def city(name):
     print "Adding city '%s'..." % name
     try:
-        database.add_node('city', name=name)
+        db.add_node('city', name=name)
     except error.types as e:
         error.handle(e, name)
     else:
