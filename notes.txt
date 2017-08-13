@@ -1,0 +1,57 @@
+Adding a band:
+
+There's a lot to doing this correctly. When you add a band, you should also be connecting that band to its hometown. I
+think it's fair to say bands are not useful in the database if they're not tied to locations.
+
+In that respect, perhaps I enforce that as a rule. That way I can make the assumption that if a band already exists,
+then so does their relationship to a place.
+
+Nah. Sometimes I'm going to miss them. I'd rather just build the tool to account for all possibilities.
+
+First and foremost, once you've retrieved the band node from facebook, you need to determine whether it already exists
+in the database. If it doesn't add it.
+
+Next, you need to determine whether its location (city) already exists in the database. If it doesn't, add it. Adding
+a city also means adding a relationship from that city to a state. Add that as well.
+
+Finally, add the relationship between the band and the city to the database.
+
+band = facebook.get('band', 'theroyalthey')
+
+if band not in database:
+    database.add(band)
+    if band.location.city not in database:
+        database.add(band.location.city)
+        database.relate(band, band.location.city)
+
+if band not related to band.location.city:
+    database.relate(band, band.location.city)
+
+Here I'm not assuming if the band exists that it has a relationship to a city. This is just to make sure this process
+will update existing nodes if for some reason they end up in the database without being tied to a location. Which is
+possible.
+
+Caveats to the above pseudocode:
+- If the location is part of the object returned from facebook, it needs to be stripped before it can be added to the
+  database.
+- The location has to be known in order to determine whether that location exists in the database (DUH).
+
+Regex to find a string that is neither preceded by nor followed by any alphanumeric characters:
+(?<=[^a-zA-z])NY(?=[^a-zA-z])
+
+This is the regex tweaked to account for start and end of line parameters:
+((?<=[^a-zA-z])|^)NY(?=[^a-zA-z]|$)
+
+I can use this to parse location from the hometown attribute if I so choose.
+
+The strategy I'd propose for that is:
+- scan the hometown string for any of the state abbreviations in the database
+- if none are found, scan the string again for any of the actual state names in the database
+- if none are found, return with nothing
+- if one IS found, chop the string off at the start index of the state
+- search for the last capitalized word in the string, and any capitalized words that immediately precede that, before
+  any commas, other punctuation, or lowercased words:
+
+    'Bushwick, Brooklyn, NY' --> 'Bushwick, Brooklyn, ' --> 'Brooklyn'
+    'Riverdel, The Bronx, NY' --> 'Riverdel, The Bronx, ' --> 'The Bronx'
+    'Lower East Side, Manhattan, NY' --> 'Lower East Side, Manhattan, ' --> 'Manhattan'

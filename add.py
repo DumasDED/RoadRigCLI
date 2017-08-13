@@ -9,7 +9,7 @@ import error
 def band(*args):
     print "Adding band '%s'..." % args[0]
     try:
-        r = facebook.get(args[0], **{'fields': config.app_fields_band})
+        r = facebook.get(args[0], fields=config.app_fields_band)
         if len(args) == 3:
             r = parse.location(r)[0]
             c, s = args[1:3]
@@ -20,7 +20,7 @@ def band(*args):
         if c is not None and s is not None:
             if not db.check_node('city', 'name', c):
                 city(c)
-            if not db.check_relationship(db.get_node('city', c, 'name'), 'is_in', db.get_node('state', s, 'abbr')):
+            if not db.check_relationship(db.get_node('city', 'name', c), 'is_in', db.get_node('state', 'abbr', s)):
                 connect.city_to_state(c, s)
             connect.band_to_city(r['username'], c)
     except error.types as e:

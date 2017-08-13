@@ -16,10 +16,10 @@ def check_node(label, key, value):
 
 def add_node(label, **properties):
     node = Node(label, **properties)
-    db.create(node)
+    return db.create(node)
 
 
-def get_node(label, value, key='username'):
+def get_node(label, key, value):
     node = db.find_one(label, key, value)
     if node is None:
         raise GraphError("No %s found with %s '%s'." % (label, key, value))
