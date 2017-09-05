@@ -55,3 +55,33 @@ The strategy I'd propose for that is:
     'Bushwick, Brooklyn, NY' --> 'Bushwick, Brooklyn, ' --> 'Brooklyn'
     'Riverdel, The Bronx, NY' --> 'Riverdel, The Bronx, ' --> 'The Bronx'
     'Lower East Side, Manhattan, NY' --> 'Lower East Side, Manhattan, ' --> 'Manhattan'
+
+Welp, it's been at least a month since I last worked on this, and in that time I've created an entire Python module
+dedicated to this location parsing task, which turned out to be considerably more complicated than I originally
+anticipated. Hopefully it won't turn out to have been a complete misuse of my time, but it works, so there's at least
+some value in that.
+
+    >>> import PushPin
+    >>> PushPin.locate('Brooklyn, NY')
+    ({'name': u'Brooklyn'}, {'abbr': u'NY', 'name': u'New York'})
+    >>> PushPin.locate('Garwood, NJ')
+    ({'name': u'Garwood'}, {'abbr': u'NJ', 'name': u'New Jersey'})
+
+Pushpin takes a string indicating a location, parses it, and returns a tuple of the city and state.
+
+It can handle pretty spartan location names:
+
+    >>> PushPin.locate('Brooklyn')
+    ({'name': u'Brooklyn'}, {'abbr': u'NY', 'name': u'New York'})
+
+It can also handle multiple locations and multiple delimiter types (in such cases it just picks one, usually the larger
+of the two):
+
+    >>> PushPin.locate('Philadelphia, PA / Boston, MA')
+    ({'name': u'Boston'}, {'abbr': u'MA', 'name': u'Massachusetts'})
+
+If the location isn't real, it'll return a tuple of None, None:
+
+    >>> PushPin.locate('Your Town')
+    (None, None)
+

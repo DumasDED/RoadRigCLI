@@ -8,7 +8,7 @@ def get(handle, **kwargs):
     for key, value in kwargs.iteritems():
         p[key] = value
 
-    r = requests.get('%s/%s' % (config.app_url, handle), p)
+    r = requests.get('%s/%s' % (config.app_url, handle), params=p)
 
     if r.status_code != 200:
         raise requests.exceptions.HTTPError(r.json()['error']['message'], response=r)
@@ -20,7 +20,7 @@ def get_attr(handle, attr_type, **kwargs):
     for key, value in kwargs.iteritems():
         p[key] = value
 
-    r = requests.get('%s/%s/%s' % (config.app_url, handle, attr_type), p)
+    r = requests.get('%s/%s/%s' % (config.app_url, handle, attr_type), params=p)
     rtn = []
 
     while True:
@@ -33,3 +33,9 @@ def get_attr(handle, attr_type, **kwargs):
             r = requests.get(r.json()['paging']['next'])
         else:
             return rtn
+
+
+def parse(node):
+    l = None
+    if 'location' in node:
+        l = node.pop('location', None)

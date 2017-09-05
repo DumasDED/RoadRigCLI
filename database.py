@@ -1,5 +1,7 @@
 import config
 import error
+import pdb
+
 
 from py2neo import Graph, Node, Relationship, GraphError
 
@@ -32,5 +34,13 @@ def check_relationship(node1, relationship_type, node2):
 
 
 def add_relationship(node1, relationship_type, node2):
+    pdb.set_trace()
     rel = Relationship(node1, relationship_type, node2)
-    db.create(rel)
+    rtn = db.create(rel)
+    return rtn
+
+
+def get_relationship(node1, relationship_type, node2):
+    rel = db.match_one(node1, relationship_type, node2)
+    return rel,
+

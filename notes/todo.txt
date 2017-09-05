@@ -1,0 +1,9 @@
+Not Started:
+- Add database to git
+- Incorporate effective method for parsing Hometown attribute for band locations
+
+In Progress:
+
+
+
+Done:
