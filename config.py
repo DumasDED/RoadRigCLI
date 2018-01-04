@@ -10,4 +10,6 @@ app_fields_band = 'name,username,about,description,band_members,location,hometow
 app_fields_venue = 'name,username,about,description,location'
 app_fields_events = 'name,place,description,start_time,end_time'
 
+g_key = 'AIzaSyCQfnBmLJB0Crh9gYdxAJWSEYVWoSHqj2k'
+
 db_password = 'abc123=0'

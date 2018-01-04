@@ -24,6 +24,8 @@ def band(username):
         dr = db.add_node('band', **r)
         print "%s successfully added to database." % r['name']
 
+    dr = db.get_node('band', 'username', username)
+
     return dr, l
 
 

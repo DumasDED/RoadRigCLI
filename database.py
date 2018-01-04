@@ -1,9 +1,7 @@
+from py2neo import Graph, Node, Relationship
+
 import config
-import error
-import pdb
-
-
-from py2neo import Graph, Node, Relationship, GraphError
+from Legacy import error
 
 try:
     db = Graph(password=config.db_password)
@@ -23,8 +21,6 @@ def add_node(label, **properties):
 
 def get_node(label, key, value):
     node = db.find_one(label, key, value)
-    if node is None:
-        raise GraphError("No %s found with %s '%s'." % (label, key, value))
     return node
 
 
@@ -34,7 +30,6 @@ def check_relationship(node1, relationship_type, node2):
 
 
 def add_relationship(node1, relationship_type, node2):
-    pdb.set_trace()
     rel = Relationship(node1, relationship_type, node2)
     rtn = db.create(rel)
     return rtn
