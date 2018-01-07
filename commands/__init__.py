@@ -1,2 +1,2 @@
-import add
-import connect
+from . import add
+from . import connect

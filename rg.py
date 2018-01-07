@@ -4,16 +4,24 @@ import tools
 
 
 def add(*add_args):
-    print add_args[0]
     if add_args[0] == 'band':
         b, l = commands.add.band(add_args[1])
         if l is None:
-            l = tools.pushpin.locate(b['hometown'])
-            # l = dict(city=x['name'], state=y['abbr'])
-            print l
+            if 'hometown' in b:
+                l = tools.pushpin.locate(b['hometown'])
+            while l is None:
+                l = tools.pushpin.locate(raw_input('Where is %s from? ' % b['name']))
         c = commands.add.city(l['city'])
-        commands.connect.band_to_city(b, c)
-        commands.connect.city_to_state(c, l['state'])
+        commands.connect.band_to_city(b['username'], c['name'])
+        commands.connect.city_to_state(c['name'], l['state'])
+
+    elif add_args[0] == 'venue':
+        v, l = commands.add.venue(add_args[1])
+        while l is None:
+            l = tools.pushpin.locate(raw_input('Where is %s located? ' % v['name']))
+        c = commands.add.city(l['city'])
+        commands.connect.venue_to_city(v['username'], c['name'])
+        commands.connect.city_to_state(c['name'], l['state'])
 
 
 args = sys.argv[1:]
