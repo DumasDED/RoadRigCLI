@@ -1,2 +1,4 @@
-from . import add
-from . import connect
+import add
+import connect
+import scan
+

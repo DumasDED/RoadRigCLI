@@ -24,6 +24,11 @@ def get_node(label, key, value):
     return node
 
 
+def get_all_nodes(label):
+    nodes = db.find(label)
+    return nodes
+
+
 def check_relationship(node1, relationship_type, node2=None):
     rel = db.match_one(start_node=node1, rel_type=relationship_type, end_node=node2)
     return rel is not None

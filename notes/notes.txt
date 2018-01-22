@@ -85,3 +85,34 @@ If the location isn't real, it'll return a tuple of None, None:
     >>> PushPin.locate('Your Town')
     (None, None)
 
+
+All the above is pointless. I've scrapped all of it and am now using the Google API. Moral of story: don't reinvent
+the fucking wheel for no good reason.
+
+
+Anyway, moving on.
+
+
+In adding events, here are some things to keep in mind:
+- If the event already exists in the database, it should probably be skipped
+    - Although it may be worth hanging onto in case there are new bands in the database that the event should be
+      connected to
+- If the event has no place/location associated with it, it is not useful and should be skipped
+
+
+example command:
+>>> python rg.py add events at ourwickedlady
+
+- ensure ourwickedlady is in the database
+- retrieve all events occurring at ourwickedlady from fb graph
+- retrieve all bands in the database
+- scan all events in fb graph result for band names
+
+
+It is possible for the location of an event to be untied to an actual facebook venue page. At some point I'll need to
+figure out what to do in those cases.
+
+
+The Gutter is so fucking annoying for no reason. They have a facebook page, all their events are linked to it, but
+nothing in the graph API actually allows me to access their information. Some kind of permissions setting they've
+set up? Why even have a facebook page then?
