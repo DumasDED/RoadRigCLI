@@ -1,34 +1,42 @@
+import sys
+
 from time import sleep
 
 from asciimatics.effects import Cycle, Stars
+from asciimatics.exceptions import StopApplication, ResizeScreenError
 from asciimatics.renderers import FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Frame, Layout, Button
 
 
-def demo(screen):
-    screen.print_at('Hello, world!', 0, 0)
-    screen.refresh()
+def demo(screen, scene):
+    frame = Frame(screen, screen.height * 2 // 3, screen.width * 2 // 3, has_border=False)
 
-    i = 1
+    layout = Layout([1, 1, 1, 1], fill_frame=True)
+    frame.add_layout(layout)
 
-    while True:
-        x = screen.get_event()
-        if x is not None:
-            if x.key_code == screen.KEY_UP:
-                screen.print_at("UP", 0, i)
-                i += 1
-            elif x.key_code == screen.KEY_LEFT:
-                screen.print_at("LEFT", 0, i)
-                i += 1
-            elif x.key_code == screen.KEY_DOWN:
-                screen.print_at("DOWN", 0, i)
-                i += 1
-            elif x.key_code == screen.KEY_RIGHT:
-                screen.print_at("RIGHT", 0, i)
-                i += 1
-        screen.refresh()
+    layout.add_widget(Button("OK", button), 1)
+    layout.add_widget(Button("Cancel", button), 2)
+
+    frame.fix()
+
+    scenes = [
+        Scene([frame], -1, name="Test")
+    ]
+
+    screen.play(scenes, stop_on_resize=True, start_scene=scene)
 
 
-Screen.wrapper(demo)
+def button():
+    raise StopApplication("User quit.")
+
+
+last_scene = None
+while True:
+    try:
+        Screen.wrapper(demo, catch_interrupt=False, arguments=[last_scene])
+        sys.exit(0)
+    except ResizeScreenError as e:
+        last_scene = e.scene
+
