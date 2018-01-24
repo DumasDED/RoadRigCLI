@@ -5,6 +5,8 @@ from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Widget, Frame, Layout, Button, ListBox, Divider, Label
 
+from pallette import pallette
+
 
 def demo(screen, scene):
     frame = Frame(screen,
@@ -14,21 +16,7 @@ def demo(screen, scene):
                   has_border=False,
                   title="Main Menu")
 
-    frame.palette['background'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['borders'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['button'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['focus_button'] = (Screen.COLOUR_WHITE, Screen.A_REVERSE, Screen.COLOUR_BLACK)
-    frame.palette['control'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['disabled'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['field'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['focus_field'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['selected_field'] = (Screen.COLOUR_WHITE, Screen.A_REVERSE, Screen.COLOUR_BLACK)
-    frame.palette['selected_focus_field'] = (Screen.COLOUR_WHITE, Screen.A_REVERSE, Screen.COLOUR_BLACK)
-    frame.palette['edit_text'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['focus_edit_text'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['scroll'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['title'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
-    frame.palette['label'] = (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK)
+    frame.palette = pallette
 
     layout3 = Layout([100])
     frame.add_layout(layout3)
@@ -52,8 +40,8 @@ def demo(screen, scene):
     layout2 = Layout([1, 1, 1, 1])
     frame.add_layout(layout2)
 
-    layout2.add_widget(Button("OK", button), 1)
-    layout2.add_widget(Button("Cancel", button), 2)
+    layout2.add_widget(Button("OK", leave), 1)
+    layout2.add_widget(Button("Cancel", leave), 2)
 
     frame.fix()
 
@@ -64,7 +52,39 @@ def demo(screen, scene):
     screen.play(scenes, stop_on_resize=True, start_scene=scene)
 
 
-def button():
+class EventList(Frame):
+    def __init__(self, screen, events):
+        super(EventList, self).__init__(screen,
+                                        screen.height // 3,
+                                        screen.width // 3,
+                                        has_border=False)
+
+        self._events = events
+
+        self.pallette = pallette
+
+        layout1 = Layout([100])
+        self.add_layout(layout1)
+
+        layout1.add_widget(Label("Event List"))
+        layout1.add_widget(Divider(draw_line=False))
+        layout1.add_widget(Label("%i events found." % len(self._events)))
+
+        layout2 = Layout([100], fill_frame=True)
+        self.add_layout(layout1)
+
+        layout2.add_widget(ListBox(
+            Widget.FILL_FRAME, [(event.event['name'], i) for event, i in enumerate(self._events)]))
+        layout2.add_widget(Divider(draw_line=False))
+
+        layout3 = Layout([1, 1, 1, 1])
+        self.add_layout(layout2)
+
+        layout3.add_widget(Button("OK", leave), 1)
+        layout3.add_widget(Button("Cancel", leave), 2)
+
+
+def leave():
     raise StopApplication("User quit.")
 
 
