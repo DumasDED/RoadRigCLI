@@ -1,6 +1,6 @@
 from asciimatics.screen import Screen
 
-pallette = {
+palette = {
     'background': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'borders': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'button': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
@@ -16,7 +16,7 @@ pallette = {
     'label': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'scroll': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'selected_control': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
-    'selected_field': (Screen.COLOUR_WHITE, Screen.A_REVERSE, Screen.COLOUR_BLACK),
+    'selected_field': (Screen.COLOUR_WHITE, Screen.A_BOLD, Screen.COLOUR_BLACK),
     'selected_focus_control': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'selected_focus_field': (Screen.COLOUR_WHITE, Screen.A_REVERSE, Screen.COLOUR_BLACK),
     'title': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),

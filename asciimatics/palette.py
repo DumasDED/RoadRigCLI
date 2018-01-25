@@ -1,6 +1,6 @@
 from asciimatics.screen import Screen
 
-pallette = {
+palette = {
     'background': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'borders': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),
     'button': (Screen.COLOUR_WHITE, Screen.A_NORMAL, Screen.COLOUR_BLACK),

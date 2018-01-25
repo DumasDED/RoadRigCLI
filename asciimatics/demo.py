@@ -5,7 +5,7 @@ from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Widget, Frame, Layout, Button, ListBox, Divider, Label
 
-from pallette import pallette
+from palette import palette
 
 
 def demo(screen, scene):
@@ -16,7 +16,7 @@ def demo(screen, scene):
                   has_border=False,
                   title="Main Menu")
 
-    frame.palette = pallette
+    frame.palette = palette
 
     layout3 = Layout([100])
     frame.add_layout(layout3)

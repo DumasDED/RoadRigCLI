@@ -30,7 +30,7 @@ def add(*add_args):
                 venue = add_args[i+2]
             if arg == 'with':
                 band = add_args[i+2]
-        commands.scan.events_by_band(band)
+        commands.scan.EventsByBand(band, venue)
 
 args = sys.argv[1:]
 
