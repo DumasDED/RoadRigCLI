@@ -22,15 +22,13 @@ def add(*add_args):
         c = commands.add.city(l['city'])
         commands.connect.venue_to_city(v['username'], c['name'])
         commands.connect.city_to_state(c['name'], l['state'])
+
     elif add_args[0] == 'events':
         band = None
-        venue = None
         for i, arg in enumerate(add_args[1:]):
-            if arg == 'at':
-                venue = add_args[i+2]
-            if arg == 'with':
+            if arg in ['with', 'featuring']:
                 band = add_args[i+2]
-        commands.scan.EventsByBand(band, venue)
+        commands.scan.events_by_band(band)
 
 args = sys.argv[1:]
 
