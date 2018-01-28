@@ -4,7 +4,7 @@ from asciimatics.exceptions import StopApplication
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Widget, Frame, Layout, Button, ListBox, Divider, Label
-from asciimatics.exceptions import ResizeScreenError
+from asciimatics.exceptions import NextScene, ResizeScreenError
 
 from palette import palette
 
@@ -18,9 +18,17 @@ class EventMap:
         self.bands = bands
 
 
+class EventGraph(list):
+    def __init__(self, events):
+        for e in events:
+            assert e is EventMap
+        super(EventGraph, self).__init__(events)
+        self.selected_event = None
+
+
 class EventsExplorer:
-    def __init__(self, event_map, band=None, venue=None):
-        self.event_map = event_map
+    def __init__(self, event_graph, band=None, venue=None):
+        self.event_graph = event_graph
         self.band = band
         self.venue = venue
 
@@ -34,7 +42,7 @@ class EventsExplorer:
 
     def explorer(self, screen, scene):
         scenes = [
-            Scene([EventList(screen, self.event_map, self.band, self.venue)], -1, name="Event List")
+            Scene([EventList(screen, self.event_graph, self.band, self.venue)], -1, name="Event List")
         ]
 
         screen.play(scenes, stop_on_resize=True, start_scene=scene)
@@ -50,7 +58,7 @@ class EventList(Frame):
 
         self.palette = palette
 
-        self.event_map = events
+        self.event_graph = events
         self.band = band
         self.venue = venue
 
@@ -61,7 +69,7 @@ class EventList(Frame):
                     '*' if event.new_venue else ' ',
                     event.event['name']
                 ), i)
-                for i, event in enumerate(self.event_map)
+                for i, event in enumerate(self.event_graph)
                 ])
 
         self.selected = 0
@@ -80,23 +88,23 @@ class EventList(Frame):
             (' featuring %s' % self.band['name']) if self.band is not None else ''
         )
 
-        layout1.add_widget(Label("%i events found%s." % (len(self.event_map), stipulation)))
+        layout1.add_widget(Label("%i events found%s." % (len(self.event_graph), stipulation)))
         layout1.add_widget(Label(
             "%i other known bands featured (!)." %
-            len(set([band for map in self.event_map for band in map.bands if band is not self.band]))
+            len(set([band for map in self.event_graph for band in map.bands if band is not self.band]))
         ))
         layout1.add_widget(Label(
             "%i distinct venues featured." %
-            len(set([map.venue['name'] for map in self.event_map]))
+            len(set([map.venue['name'] for map in self.event_graph]))
         ))
         layout1.add_widget(Label(
             "%i venues not currently in the database (*)." %
-            len(set([map.venue['name'] for map in self.event_map if map.new_venue]))
+            len(set([map.venue['name'] for map in self.event_graph if map.new_venue]))
         ))
         layout1.add_widget(Divider(draw_line=False))
 
         # listbox value isn't working, not sure why....
-        layout1.add_widget(Label("%i of %i events" % (self.event_listbox.value or 0, len(self.event_map))), 1)
+        # layout1.add_widget(Label("%i of %i events" % (self.selected or 0, len(self.event_map))), 1)
 
         layout2 = Layout([100], fill_frame=True)
         self.add_layout(layout2)
@@ -111,6 +119,12 @@ class EventList(Frame):
         layout3.add_widget(Button("Cancel", self._quit), 2)
 
         self.fix()
+
+    def _on_pick(self):
+        self.event_graph.selected_event = self.event_listbox.value
+
+    def _select(self):
+        raise NextScene("Event Details")
 
     @staticmethod
     def _quit():
