@@ -61,7 +61,7 @@ class EventList(Frame):
 
         self._events = events
 
-        self.pallette = pallette
+        self.palette = palette
 
         layout1 = Layout([100])
         self.add_layout(layout1)

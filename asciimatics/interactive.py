@@ -157,7 +157,7 @@ class ContactView(Frame):
 
     def _ok(self):
         self.save()
-        self._model. (self.data)
+        self._model.update_current_contact(self.data)
         raise NextScene("Main")
 
     @staticmethod

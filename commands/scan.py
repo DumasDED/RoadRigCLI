@@ -2,7 +2,7 @@ import config
 import facebook as fb
 import database as db
 
-from explorer import EventsExplorer, EventMap
+from explorer import EventsExplorer, EventModel, EventMap
 
 
 def events_by_band(band_handle):
@@ -25,10 +25,10 @@ def events_by_band(band_handle):
     events = fb.get_attr(by_band['username'], 'events', fields=config.app_fields_events)
 
     # Create an event map
-    event_map = [EventMap(event=event, bands=[by_band]) for event in events]
+    event_maps = [EventMap(event=event, bands=[by_band]) for event in events]
 
     # For each event in the event map...
-    for map in event_map:
+    for map in event_maps:
 
         # Search for known bands and append them where found:
         for band in bands:
@@ -48,9 +48,12 @@ def events_by_band(band_handle):
                 map.new_venue = True
 
     # Rule out events without a venue:
-    event_map = [e for e in event_map if e.venue]
+    event_maps = [e for e in event_maps if e.venue]
+
+    # Create Event Model
+    event_model = EventModel(event_maps, band=by_band)
 
     # Open the events explorer:
-    EventsExplorer(event_map, band=by_band)
+    EventsExplorer(event_model, band=by_band)
 
 

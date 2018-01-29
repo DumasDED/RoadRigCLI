@@ -3,7 +3,7 @@ import sys
 from asciimatics.exceptions import StopApplication
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
-from asciimatics.widgets import Widget, Frame, Layout, Button, ListBox, Divider, Label
+from asciimatics.widgets import Widget, Frame, Layout, Button, ListBox, Divider, Label, Text, TextBox, DatePicker
 from asciimatics.exceptions import NextScene, ResizeScreenError
 
 from palette import palette
@@ -18,17 +18,69 @@ class EventMap:
         self.bands = bands
 
 
-class EventGraph(list):
-    def __init__(self, events):
-        for e in events:
-            assert e is EventMap
-        super(EventGraph, self).__init__(events)
-        self.selected_event = None
+class EventModel:
+    def __init__(self, events, band=None, venue=None):
+        self._events = events
+        self._band = band
+        self._venue = venue
+
+        self._selected_index = 0
+
+    @property
+    def selected_index(self):
+        with open("dick.txt", "a") as f:
+            f.write("Selected index value get: %i\n" % self._selected_index)
+        return self._selected_index
+
+    @selected_index.setter
+    def selected_index(self, value):
+        with open("dick.txt", "a") as f:
+            f.write("Selected index value set: %i\n" % value)
+        self._selected_index = value
+
+    @property
+    def band(self):
+        return self._band
+
+    @property
+    def venue(self):
+        return self._venue
+
+    @property
+    def count(self):
+        return len(self._events)
+
+    @property
+    def count_of_other_bands(self):
+        return len(set([band for m in self._events for band in m.bands if band is not self._band]))
+
+    @property
+    def count_of_venues(self):
+        return len(set([m.venue['name'] for m in self._events]))
+
+    @property
+    def count_of_new_venues(self):
+        return len(set([m.venue['name'] for m in self._events if m.new_venue]))
+
+    def get_event_list(self):
+        return [('%s%s %s' % (
+                    '!' if [b for b in event.bands if b is not self._band] else ' ',
+                    '*' if event.new_venue else ' ',
+                    event.event['name']
+                ), i) for i, event in enumerate(self._events)]
+
+    def get_current_event(self):
+        x = self._events[self.selected_index].event
+        e = {}
+        for k in ['name', 'start_time', 'description']:
+            e[k] = x[k]
+        e['place'] = x['place']['name']
+        return e
 
 
 class EventsExplorer:
-    def __init__(self, event_graph, band=None, venue=None):
-        self.event_graph = event_graph
+    def __init__(self, event_model, band=None, venue=None):
+        self._model = event_model
         self.band = band
         self.venue = venue
 
@@ -42,14 +94,15 @@ class EventsExplorer:
 
     def explorer(self, screen, scene):
         scenes = [
-            Scene([EventList(screen, self.event_graph, self.band, self.venue)], -1, name="Event List")
+            Scene([EventList(screen, self._model)], -1, name="Event List"),
+            Scene([EventDetails(screen, self._model)], -1, name="Event Details")
         ]
 
         screen.play(scenes, stop_on_resize=True, start_scene=scene)
 
 
 class EventList(Frame):
-    def __init__(self, screen, events, band=None, venue=None):
+    def __init__(self, screen, event_model):
         super(EventList, self).__init__(screen,
                                         screen.height // 2,
                                         screen.width // 2,
@@ -58,21 +111,13 @@ class EventList(Frame):
 
         self.palette = palette
 
-        self.event_graph = events
-        self.band = band
-        self.venue = venue
+        self._model = event_model
 
-        self.event_listbox = ListBox(
-            Widget.FILL_FRAME, [
-                ('%s%s %s' % (
-                    '!' if [b for b in event.bands if b is not self.band] else ' ',
-                    '*' if event.new_venue else ' ',
-                    event.event['name']
-                ), i)
-                for i, event in enumerate(self.event_graph)
-                ])
-
-        self.selected = 0
+        self.event_listbox = ListBox(Widget.FILL_FRAME,
+                                     self._model.get_event_list(),
+                                     name="events",
+                                     on_change=self._on_pick,
+                                     on_select=self._select)
 
         layout0 = Layout([100])
         self.add_layout(layout0)
@@ -84,27 +129,21 @@ class EventList(Frame):
         self.add_layout(layout1)
 
         stipulation = '%s%s' % (
-            (' at %s' % self.venue['venue']) if self.venue is not None else '',
-            (' featuring %s' % self.band['name']) if self.band is not None else ''
+            (' at %s' % self._model.venue['venue']) if self._model.venue is not None else '',
+            (' featuring %s' % self._model.band['name']) if self._model.band is not None else ''
         )
 
-        layout1.add_widget(Label("%i events found%s." % (len(self.event_graph), stipulation)))
+        layout1.add_widget(Label("%i events found%s." % (self._model.count, stipulation)))
         layout1.add_widget(Label(
-            "%i other known bands featured (!)." %
-            len(set([band for map in self.event_graph for band in map.bands if band is not self.band]))
+            "%i other known bands featured (!)." % self._model.count_of_other_bands
         ))
         layout1.add_widget(Label(
-            "%i distinct venues featured." %
-            len(set([map.venue['name'] for map in self.event_graph]))
+            "%i distinct venues featured." % self._model.count_of_venues
         ))
         layout1.add_widget(Label(
-            "%i venues not currently in the database (*)." %
-            len(set([map.venue['name'] for map in self.event_graph if map.new_venue]))
+            "%i venues not currently in the database (*)." % self._model.count_of_new_venues
         ))
         layout1.add_widget(Divider(draw_line=False))
-
-        # listbox value isn't working, not sure why....
-        # layout1.add_widget(Label("%i of %i events" % (self.selected or 0, len(self.event_map))), 1)
 
         layout2 = Layout([100], fill_frame=True)
         self.add_layout(layout2)
@@ -112,20 +151,83 @@ class EventList(Frame):
         layout2.add_widget(self.event_listbox)
         layout2.add_widget(Divider(draw_line=False))
 
-        layout3 = Layout([1, 1, 1, 1])
+        layout3 = Layout([1, 1, 1, 1, 1])
         self.add_layout(layout3)
 
-        layout3.add_widget(Button("OK", self._quit), 1)
-        layout3.add_widget(Button("Cancel", self._quit), 2)
+        layout3.add_widget(Button("OK", self._womp), 1)
+        layout3.add_widget(Button("Exit", self._quit), 2)
 
         self.fix()
 
-    def _on_pick(self):
-        self.event_graph.selected_event = self.event_listbox.value
+    def reset(self):
+        super(EventList, self).reset()
+        self.event_listbox.value = self._model.selected_index
 
-    def _select(self):
+    def _on_pick(self):
+        self._model.selected_index = self.event_listbox.value
+
+    def _womp(self):
+        self.event_listbox.value = 5
+
+    @staticmethod
+    def _select():
         raise NextScene("Event Details")
 
     @staticmethod
     def _quit():
         raise StopApplication("User quit.")
+
+
+class EventDetails(Frame):
+    def __init__(self, screen, event_model):
+        super(EventDetails, self).__init__(screen,
+                                           screen.height // 2,
+                                           screen.width // 2,
+                                           has_border=False,
+                                           reduce_cpu=True)
+
+        self.palette = palette
+
+        self._model = event_model
+
+        layout0 = Layout([100])
+        self.add_layout(layout0)
+
+        layout0.add_widget(Label("EVENT DETAILS"))
+        layout0.add_widget(Divider(draw_line=False))
+
+        layout1 = Layout([100], fill_frame=True)
+        self.add_layout(layout1)
+
+        w_name = Text("Name:", "name")
+        w_place = Text("Place:", "place")
+        w_date = Text("Date:", "start_time")
+        w_description = TextBox(Widget.FILL_FRAME, "Description:", "description", as_string=True)
+
+        w_name.disabled = True
+        w_place.disabled = True
+        w_date.disabled = True
+        w_description.disabled = True
+
+        layout1.add_widget(w_name)
+        layout1.add_widget(w_place)
+        layout1.add_widget(w_date)
+        layout1.add_widget(Divider(draw_line=False))
+
+        layout1.add_widget(w_description)
+        layout1.add_widget(Divider(draw_line=False))
+
+        layout2 = Layout([100])
+        self.add_layout(layout2)
+
+        layout2.add_widget(Button("OK", self._exit))
+
+        self.fix()
+
+    def reset(self):
+        super(EventDetails, self).reset()
+        self.data = self._model.get_current_event()
+
+    @staticmethod
+    def _exit():
+        raise NextScene("Event List")
