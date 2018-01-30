@@ -9,7 +9,6 @@ from asciimatics.exceptions import NextScene, ResizeScreenError
 from palette import palette
 
 
-# TODO: build db/graph retrieval directly into the class?
 class EventMap:
     def __init__(self, event=None, venue=None, bands=[]):
         self.event = event
@@ -28,14 +27,10 @@ class EventModel:
 
     @property
     def selected_index(self):
-        with open("dick.txt", "a") as f:
-            f.write("Selected index value get: %i\n" % self._selected_index)
         return self._selected_index
 
     @selected_index.setter
     def selected_index(self, value):
-        with open("dick.txt", "a") as f:
-            f.write("Selected index value set: %i\n" % value)
         self._selected_index = value
 
     @property
@@ -70,11 +65,12 @@ class EventModel:
                 ), i) for i, event in enumerate(self._events)]
 
     def get_current_event(self):
-        x = self._events[self.selected_index].event
+        x = self._events[self.selected_index]
         e = {}
         for k in ['name', 'start_time', 'description']:
-            e[k] = x[k]
-        e['place'] = x['place']['name']
+            e[k] = x.event[k]
+        e['place'] = x.event['place']['name']
+        e['other_bands'] = [(b['name'], i) for i, b in enumerate(x.bands)]
         return e
 
 
@@ -196,13 +192,17 @@ class EventDetails(Frame):
         layout0.add_widget(Label("EVENT DETAILS"))
         layout0.add_widget(Divider(draw_line=False))
 
-        layout1 = Layout([100], fill_frame=True)
+        layout1 = Layout([100, 50])
         self.add_layout(layout1)
+
+        layout2 = Layout([100], fill_frame=True)
+        self.add_layout(layout2)
 
         w_name = Text("Name:", "name")
         w_place = Text("Place:", "place")
         w_date = Text("Date:", "start_time")
         w_description = TextBox(Widget.FILL_FRAME, "Description:", "description", as_string=True)
+        w_other_bands = ListBox(4, self._model.get_current_event()['other_bands'])
 
         w_name.disabled = True
         w_place.disabled = True
@@ -212,15 +212,16 @@ class EventDetails(Frame):
         layout1.add_widget(w_name)
         layout1.add_widget(w_place)
         layout1.add_widget(w_date)
-        layout1.add_widget(Divider(draw_line=False))
+        layout1.add_widget(w_other_bands, 1)
 
-        layout1.add_widget(w_description)
-        layout1.add_widget(Divider(draw_line=False))
+        layout2.add_widget(Divider(draw_line=False))
+        layout2.add_widget(w_description)
+        layout2.add_widget(Divider(draw_line=False))
 
-        layout2 = Layout([100])
-        self.add_layout(layout2)
+        layout3 = Layout([100])
+        self.add_layout(layout3)
 
-        layout2.add_widget(Button("OK", self._exit))
+        layout3.add_widget(Button("OK", self._exit))
 
         self.fix()
 

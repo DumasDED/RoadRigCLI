@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8075269b-f307-4a51-af4c-4363eae65359" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/fuck.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/RoadRigCLI.iml" afterPath="$PROJECT_DIR$/.idea/RoadRigCLI.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asciimatics/demo.py" afterPath="$PROJECT_DIR$/asciimatics/demo.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/asciimatics/interactive.py" afterPath="$PROJECT_DIR$/asciimatics/interactive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/commands/scan.py" afterPath="$PROJECT_DIR$/commands/scan.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/explorer/EventsExplorer.py" afterPath="$PROJECT_DIR$/explorer/EventsExplorer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/explorer/__init__.py" afterPath="$PROJECT_DIR$/explorer/__init__.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,8 +23,8 @@
             <file leaf-file-name="interactive.py" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/asciimatics/interactive.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="195">
-                    <caret line="42" column="41" lean-forward="false" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+                  <state relative-caret-position="300">
+                    <caret line="108" column="37" lean-forward="true" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
                     <folding />
                   </state>
                 </provider>
@@ -60,7 +53,7 @@
       <file leaf-file-name="scan.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/commands/scan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="780">
+            <state relative-caret-position="840">
               <caret line="56" column="30" lean-forward="false" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="30" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -72,21 +65,11 @@
       <file leaf-file-name="EventsExplorer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/explorer/EventsExplorer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="31" column="76" lean-forward="false" selection-start-line="31" selection-start-column="52" selection-end-line="31" selection-end-column="76" />
+            <state relative-caret-position="352">
+              <caret line="204" column="79" lean-forward="false" selection-start-line="204" selection-start-column="79" selection-end-line="204" selection-end-column="79" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -565,9 +548,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-182" y="-877" width="1600" height="877" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.118429385" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11779607" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4189781" sideWeight="0.50754565" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32611465" sideWeight="0.49086577" order="1" side_tool="false" content_ui="tabs" />
@@ -790,22 +773,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fuck.txt" />
-    <entry file="file://$PROJECT_DIR$/f.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/f.txt" />
     <entry file="file://$PROJECT_DIR$/asciimatics/demo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
@@ -823,9 +792,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dick.txt" />
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/commands/scan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
+        <state relative-caret-position="840">
           <caret line="56" column="30" lean-forward="false" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="30" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
@@ -833,25 +811,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dick.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/asciimatics/interactive.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="42" column="41" lean-forward="false" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+        <state relative-caret-position="300">
+          <caret line="108" column="37" lean-forward="true" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/explorer/EventsExplorer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="31" column="76" lean-forward="false" selection-start-line="31" selection-start-column="52" selection-end-line="31" selection-end-column="76" />
+        <state relative-caret-position="352">
+          <caret line="204" column="79" lean-forward="false" selection-start-line="204" selection-start-column="79" selection-end-line="204" selection-end-column="79" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
