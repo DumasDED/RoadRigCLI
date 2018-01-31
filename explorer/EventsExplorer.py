@@ -15,6 +15,10 @@ class EventMap:
         self.venue = venue
         self.new_venue = False
         self.bands = bands
+        # This isn't going to work if the event map is instantiated without any bands present.
+        # Need to find a better solution.
+        for b in self.bands:
+            b['include'] = True
 
 
 class EventModel:
@@ -57,21 +61,31 @@ class EventModel:
     def count_of_new_venues(self):
         return len(set([m.venue['name'] for m in self._events if m.new_venue]))
 
-    def get_event_list(self):
+    @property
+    def event_list(self):
         return [('%s%s %s' % (
                     '!' if [b for b in event.bands if b is not self._band] else ' ',
                     '*' if event.new_venue else ' ',
                     event.event['name']
                 ), i) for i, event in enumerate(self._events)]
 
-    def get_current_event(self):
+    @property
+    def current_event(self):
         x = self._events[self.selected_index]
         e = {}
         for k in ['name', 'start_time', 'description']:
             e[k] = x.event[k]
         e['place'] = x.event['place']['name']
-        e['other_bands'] = [(b['name'], i) for i, b in enumerate(x.bands)]
+        e['other_bands'] = [
+                ((u'\u2714 ' if b['include'] is True else u'\u2717 ') + b['name'], i)
+                for i, b in enumerate(x.bands)
+                if b['id'] is not self.band['id']
+            ]
         return e
+
+    def flip_band(self, index):
+        x = self._events[self.selected_index]
+        x.bands[index]['include'] = not x.bands[index]['include']
 
 
 class EventsExplorer:
@@ -110,7 +124,7 @@ class EventList(Frame):
         self._model = event_model
 
         self.event_listbox = ListBox(Widget.FILL_FRAME,
-                                     self._model.get_event_list(),
+                                     self._model.event_list,
                                      name="events",
                                      on_change=self._on_pick,
                                      on_select=self._select)
@@ -179,6 +193,7 @@ class EventDetails(Frame):
         super(EventDetails, self).__init__(screen,
                                            screen.height // 2,
                                            screen.width // 2,
+                                           on_load=self.reload_band_list,
                                            has_border=False,
                                            reduce_cpu=True)
 
@@ -186,13 +201,15 @@ class EventDetails(Frame):
 
         self._model = event_model
 
-        layout0 = Layout([100])
+        layout0 = Layout([100, 2, 50])
         self.add_layout(layout0)
 
         layout0.add_widget(Label("EVENT DETAILS"))
         layout0.add_widget(Divider(draw_line=False))
 
-        layout1 = Layout([100, 50])
+        layout0.add_widget(Label("OTHER KNOWN BANDS FEATURED"), 2)
+
+        layout1 = Layout([100, 2, 50])
         self.add_layout(layout1)
 
         layout2 = Layout([100], fill_frame=True)
@@ -202,7 +219,8 @@ class EventDetails(Frame):
         w_place = Text("Place:", "place")
         w_date = Text("Date:", "start_time")
         w_description = TextBox(Widget.FILL_FRAME, "Description:", "description", as_string=True)
-        w_other_bands = ListBox(4, self._model.get_current_event()['other_bands'])
+
+        self.w_other_bands = ListBox(4, self._model.current_event['other_bands'], on_select=self.flip_band)
 
         w_name.disabled = True
         w_place.disabled = True
@@ -212,7 +230,8 @@ class EventDetails(Frame):
         layout1.add_widget(w_name)
         layout1.add_widget(w_place)
         layout1.add_widget(w_date)
-        layout1.add_widget(w_other_bands, 1)
+
+        layout1.add_widget(self.w_other_bands, 2)
 
         layout2.add_widget(Divider(draw_line=False))
         layout2.add_widget(w_description)
@@ -225,9 +244,18 @@ class EventDetails(Frame):
 
         self.fix()
 
+    def flip_band(self):
+        i = self.w_other_bands.value
+        self._model.flip_band(i)
+        self.reload_band_list()
+        self.w_other_bands.value = i
+
+    def reload_band_list(self):
+        self.w_other_bands.options = self._model.current_event['other_bands']
+
     def reset(self):
         super(EventDetails, self).reset()
-        self.data = self._model.get_current_event()
+        self.data = self._model.current_event
 
     @staticmethod
     def _exit():
