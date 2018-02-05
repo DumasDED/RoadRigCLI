@@ -16,11 +16,18 @@ def add(*add_args):
         commands.connect.city_to_state(c['name'], l['state'])
 
     elif add_args[0] == 'venue':
-        v, l = commands.add.venue(add_args[1])
+        # TODO: Add username to venue field list in config.py (config not in git, only correct on one comp)
+        try:
+            # If argument is numeric, search by id:
+            float(add_args[1])
+            v, l = commands.add.venue(id=add_args[1])
+        except:
+            # Otherwise, search by username:
+            v, l = commands.add.venue(add_args[1])
         while l is None:
             l = tools.pushpin.locate(raw_input('Where is %s located? ' % v['name']))
         c = commands.add.city(l['city'])
-        commands.connect.venue_to_city(v['username'], c['name'])
+        commands.connect.venue_to_city(v, c)
         commands.connect.city_to_state(c['name'], l['state'])
 
     elif add_args[0] == 'events':

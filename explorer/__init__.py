@@ -1,1 +1,1 @@
-from EventsExplorer import EventsExplorer, EventModel, EventMap
+from EventsExplorer import EventsExplorer, EventModel, EventMap, BandList

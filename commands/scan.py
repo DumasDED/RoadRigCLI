@@ -1,4 +1,6 @@
 import config
+import commands
+
 import facebook as fb
 import database as db
 
@@ -32,7 +34,11 @@ def events_by_band(band_handle):
 
         # Search for known bands and append them where found:
         for band in bands:
-            if band['name'] in map.event['name'] or band['name'] in map.event['description']:
+            if band['name'] in map.event['name']\
+                    or (
+                        band['name'] in map.event['description']
+                        if 'description' in map.event
+                        else False):
                 map.bands.append(band)
 
         # Search for known venues and add them where found:
@@ -48,12 +54,48 @@ def events_by_band(band_handle):
                 map.new_venue = True
 
     # Rule out events without a venue:
-    event_maps = [e for e in event_maps if e.venue]
+    event_maps = [e for e in event_maps if e.venue and 'id' in e.venue.keys()]
+
+    # Rule out events that are already in the database:
+    database_event_ids = [e['id'] for e in db.get_all_nodes('event')]
+    event_maps = [e for e in event_maps if e.event['id'] not in database_event_ids]
 
     # Create Event Model
     event_model = EventModel(event_maps, band=by_band)
 
     # Open the events explorer:
-    EventsExplorer(event_model, band=by_band)
+    try:
+        EventsExplorer(event_model, band=by_band)
+    except:
+        pass
+
+    # Show the results of the explorer:
+    print "Results:"
+    print "%i events found." % event_model.count
+    print "%i events excluded." % (event_model.count - event_model.count_included)
+    print "%i events to be imported." % event_model.count_included
+    print ""
+
+    # If specified, commit all events and their respective relationships:
+    if event_model.commit_all is True:
+        print "Adding %i events to the database:" % event_model.count_included
+        for map in [e for e in event_model.events if e.commit is True]:
+            # Add new venues where applicable:
+            if map.new_venue is True:
+                print "Venue not found in database."
+                map.venue, l = commands.add.venue(id=map.venue['id'])
+                c = commands.add.city(l['city'])
+                commands.connect.venue_to_city(map.venue, c)
+                commands.connect.city_to_state(c['name'], l['state'])
+            e = commands.add.event(map.event)
+            commands.connect.event_to_venue(e, map.venue)
+            for b in map.bands:
+                # print b['name'], b['include']
+                if map.bands.is_included(b):
+                    commands.connect.event_to_band(e, b)
+                    # b['include'] = True
+                # print b['name'], b['include']
+    else:
+        print "Cancelling..."
 
 

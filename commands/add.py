@@ -32,33 +32,69 @@ def band(username):
     return dr, l
 
 
-def venue(username):
+def venue(username=None, id=None):
     """
     Add a venue to the Neo4J database.
 
     :param username: the username/handle for the venue being added to the database
+    :param id: the id for the venue being added to the database
     :return v: the venue node returned from the database
     :return l: the venue's location object from the facebook node
     """
-    username = username.lower()
+    if username is not None:
+        username = username.lower()
+        search_value = username
+        search_by = 'username'
+    else:
+        search_value = id
+        search_by = 'id'
 
-    print "Adding venue '%s'..." % username
+    print "Adding venue with %s '%s'..." % (search_by, search_value)
 
-    r = fb.get(username, fields=config.app_fields_venue)
+    r = fb.get(search_value, fields=config.app_fields_venue)
     l = r.pop('location', None)
 
-    dr = db.get_node('venue', 'username', username)
+    dr = db.get_node('venue', search_by, search_value)
 
     if dr is None:
-        r['username'] = r['username'].lower()
+        if 'username' in r.keys():
+            r['username'] = r['username'].lower()
         db.add_node('venue', **r)
         print "%s successfully added to database." % r['name']
     else:
         print "%s already exists in the database." % r['name']
 
-    dr = db.get_node('venue', 'username', username)
+    dr = db.get_node('venue', search_by, search_value)
 
     return dr, l
+
+
+def event(event):
+    """
+    Add an event to the Neo4J database.
+
+    :param event: the id of the event being added to the database
+    :return: the event node returned from the database
+    """
+    print "Adding event '%s' to database..." % event['name']
+
+    e = fb.get(event['id'], fields=config.app_fields_events)
+
+    # Strip place property:
+    if 'place' in e.keys():
+        del e['place']
+
+    dr = db.get_node('event', 'id', e['id'])
+
+    if dr is None:
+        db.add_node('event', **e)
+        print "Event '%s' successfully added to database." % e['name']
+    else:
+        print "Event '%s' already exists in the database." % e['name']
+
+    dr = db.get_node('event', 'id', e['id'])
+
+    return dr
 
 
 def city(name):
