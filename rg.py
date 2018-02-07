@@ -6,7 +6,9 @@ import tools
 def add(*add_args):
     if add_args[0] == 'band':
         b, l = commands.add.band(add_args[1])
-        if l is None:
+        # Fucking Plaid Dracula...
+        # Need to validate the location before importing it
+        if l is None or tools.pushpin.locate(l['city'] + ', ' + l['state']) is None:
             if 'hometown' in b:
                 l = tools.pushpin.locate(b['hometown'])
             while l is None:
@@ -14,6 +16,18 @@ def add(*add_args):
         c = commands.add.city(l['city'])
         commands.connect.band_to_city(b['username'], c['name'])
         commands.connect.city_to_state(c['name'], l['state'])
+
+    elif add_args[0] == 'bands':
+        if len(add_args) == 4:
+            filepath = add_args[3]
+        elif len(add_args) == 3:
+            filepath = add_args[2]
+
+        with open(filepath, 'r') as lst:
+            bandlist = lst.read().split('\n')
+
+        for band in bandlist:
+            add(*['band', band])
 
     elif add_args[0] == 'venue':
         # TODO: Add username to venue field list in config.py (config not in git, only correct on one comp)
