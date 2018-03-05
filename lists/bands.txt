@@ -27,12 +27,12 @@ wildpinkwildpink
 adeerahorse
 nihiloceros
 RobotPrincessMusic
-greatwoods`
+greatwoods
 Illiteratelight
 TheBigDrops
 franciemoonmusic
 QWAMband
-govamanosgo
+-- govamanosgo
 twoinchastronaut
 TRJCTORIES
 Iamthepolisharmy
@@ -53,7 +53,7 @@ BigQuiet
 lowfatgettinghigh
 fruitxflowers
 darkwingdarkwing
-PaperFleet
+-- PaperFleet
 ghostfunkorchestra
 sirsandmadams
 copperdalton
@@ -69,3 +69,4 @@ Highwaisted
 Littleanchor
 Amoebaearhart
 TheDukeOfSurl
+scoutharrisband

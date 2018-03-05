@@ -8,6 +8,8 @@ def add(*add_args):
         b, l = commands.add.band(add_args[1])
         # Fucking Plaid Dracula...
         # Need to validate the location before importing it
+        if commands.retrieve.relationship(b, 'is_from')[0] is not None:
+            return
         if l is not None and ('city' not in l.keys() or 'state' not in l.keys()):
             l = None
         if l is None:
@@ -31,6 +33,8 @@ def add(*add_args):
             bandlist = lst.read().split('\n')
 
         for band in bandlist:
+            if band[:2] == "--":
+                continue
             add(*['band', band])
 
     elif add_args[0] == 'venue':

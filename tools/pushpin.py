@@ -31,7 +31,29 @@ def locate(query):
         [component for component in components if intersect(component['types'], ['sublocality', 'sublocality_level_1'])]
     )[0]
 
-    result = {}
-    result['city'] = city['short_name']
-    result['state'] = state['short_name']
+    result = {'city': city['short_name'], 'state': state['short_name']}
     return result
+
+
+def get_location(query):
+
+    gmaps = googlemaps.Client(key=config.g_key)
+
+    result = gmaps.places(query=query)
+    if result['status'] != 'OK':
+        return None
+    return result['results'][0]['geometry']['location']
+
+
+def get_bounds(query):
+
+    gmaps = googlemaps.Client(key=config.g_key)
+
+    result = gmaps.places(query=query)
+    if result['status'] != 'OK':
+        return None
+    bounds = result['results'][0]['geometry']['viewport']
+    return dict(east=bounds['northeast']['lng'],
+                north=bounds['northeast']['lat'],
+                south=bounds['southwest']['lat'],
+                west=bounds['southwest']['lng'])

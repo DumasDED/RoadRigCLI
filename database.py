@@ -1,4 +1,4 @@
-from py2neo import Graph, Node, Relationship
+from py2neo import Graph, Node, Relationship, ConstraintError
 
 import config
 from Legacy import error
@@ -16,7 +16,15 @@ def check_node(label, key, value):
 
 def add_node(label, **properties):
     node = Node(label, **properties)
-    return db.create(node)
+    try:
+        rtn = db.create(node)
+        return rtn
+    except ConstraintError:
+        db.merge(node, 'id', properties['id'])
+        for prop in properties.keys():
+            node[prop] = properties[prop]
+        node.push()
+    # return db.create(node)
 
 
 def get_node(label, key, value):
