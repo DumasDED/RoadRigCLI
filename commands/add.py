@@ -2,6 +2,8 @@ import config
 import facebook as fb
 import database as db
 
+from tools import pushpin
+
 
 def band(username):
     """
@@ -20,12 +22,13 @@ def band(username):
 
     dr = db.get_node('band', 'username', username)
 
+    r['username'] = r['username'].lower()
+    db.add_node('band', 'username', **r)
+
     if dr is None:
-        r['username'] = r['username'].lower()
-        db.add_node('band', **r)
         print "%s successfully added to database." % r['name']
     else:
-        print "%s already exists in the database." % r['name']
+        print "%s already exists. Existing record updated." % r['name']
 
     dr = db.get_node('band', 'username', username)
 
@@ -54,15 +57,21 @@ def venue(username=None, id=None):
     r = fb.get(search_value, fields=config.app_fields_venue)
     l = r.pop('location', None)
 
+    if l is not None:
+        for key in l.keys():
+            r[key] = l[key]
+
     dr = db.get_node('venue', search_by, search_value)
 
+    if 'username' in r.keys():
+        r['username'] = r['username'].lower()
+
+    db.add_node('venue', 'id', **r)
+
     if dr is None:
-        if 'username' in r.keys():
-            r['username'] = r['username'].lower()
-        db.add_node('venue', **r)
         print "%s successfully added to database." % r['name']
     else:
-        print "%s already exists in the database." % r['name']
+        print "%s already exists. Existing record updated." % r['name']
 
     dr = db.get_node('venue', search_by, search_value)
 
@@ -86,11 +95,12 @@ def event(event):
 
     dr = db.get_node('event', 'id', e['id'])
 
+    db.add_node('event', 'id', **e)
+
     if dr is None:
-        db.add_node('event', **e)
         print "Event '%s' successfully added to database." % e['name']
     else:
-        print "Event '%s' already exists in the database." % e['name']
+        print "Event '%s' already exists. Existing record updated." % e['name']
 
     dr = db.get_node('event', 'id', e['id'])
 
@@ -108,7 +118,18 @@ def city(name):
 
     if c is None:
         print "Adding city '%s'..." % name
-        db.add_node('city', name=name)
+        db.add_node('city', 'name', name=name)
         c = db.get_node('city', 'name', name)
+    else:
+        # Retrieve state, get viewport:
+        print "city '%s' already exists, updating..." % name
+        c = db.get_node('city', 'name', name)
+        r = db.get_relationship(c, 'is_in', None)
+        s = r[0].end_node()
+        l = pushpin.get_bounds('%s, %s' % (c['name'], s['abbr']))
+        for key in l.keys():
+            c[key] = l[key]
+        db.add_node('city', 'name', **c)
+
 
     return c

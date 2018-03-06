@@ -14,13 +14,14 @@ def check_node(label, key, value):
     return node is not None
 
 
-def add_node(label, **properties):
+def add_node(label, key='username', **properties):
     node = Node(label, **properties)
     try:
         rtn = db.create(node)
         return rtn
     except ConstraintError:
-        db.merge(node, 'id', properties['id'])
+        # If node exists, update:
+        db.merge(node, label, key)
         for prop in properties.keys():
             node[prop] = properties[prop]
         node.push()

@@ -51,6 +51,22 @@ def add(*add_args):
         commands.connect.venue_to_city(v, c)
         commands.connect.city_to_state(c['name'], l['state'])
 
+    elif add_args[0] == 'venues':
+        filepath = ''
+
+        if len(add_args) == 4:
+            filepath = add_args[3]
+        elif len(add_args) == 3:
+            filepath = add_args[2]
+
+        with open(filepath, 'r') as lst:
+            venuelist = lst.read().split('\n')
+
+        for venue in venuelist:
+            if venue[:2] == "--":
+                continue
+            add(*['venue', venue])
+
     elif add_args[0] == 'events':
         band = None
         for i, arg in enumerate(add_args[1:]):
@@ -58,7 +74,15 @@ def add(*add_args):
                 band = add_args[i+2]
         commands.scan.events_by_band(band)
 
+
+def update(*update_args):
+    if update_args[0] == 'cities':
+        commands.update.cities()
+
+
 args = sys.argv[1:]
 
 if args[0] == 'add':
     add(*args[1:])
+elif args[0] == 'update':
+    update(*args[1:])
